@@ -1,0 +1,22 @@
+name: alpy_edit
+description: Alpy Misali Vidio
+publish_to: 'none'
+version: 1.0.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  image_picker: ^1.1.2
+  shared_preferences: ^2.3.2
+  path_provider: ^2.1.4
+  gal: ^2.3.0
+
+flutter:
+  uses-material-design: true
+  fonts:
+    - family: Minecraft
+      fonts:
+        - asset: Minecraft.ttf
