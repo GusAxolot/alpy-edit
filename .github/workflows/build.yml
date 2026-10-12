@@ -1,0 +1,37 @@
+name: Build APK
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+      - run: flutter create --project-name alpy_edit --org com.alpy --platforms android .
+      - run: sed -i 's|android:label="alpy_edit"|android:label="Alpy Misali Vidio ❤️"|' android/app/src/main/AndroidManifest.xml
+      - run: |
+          pip install pillow
+          python3 - <<'EOF'
+          from PIL import Image
+          img = Image.open('icon.png').convert('RGBA')
+          w, h = img.size
+          m = min(w, h)
+          l, t = (w - m) // 2, (h - m) // 2
+          img = img.crop((l, t, l + m, t + m))
+          sizes = {'mdpi': 48, 'hdpi': 72, 'xhdpi': 96, 'xxhdpi': 144, 'xxxhdpi': 192}
+          for d, s in sizes.items():
+              img.resize((s, s), Image.LANCZOS).save(f'android/app/src/main/res/mipmap-{d}/ic_launcher.png', 'PNG')
+          EOF
+      - run: flutter pub get
+      - run: flutter build apk --release
+      - uses: actions/upload-artifact@v4
+        with:
+          name: alpy-edit-apk
+          path: build/app/outputs/flutter-apk/app-release.apk
