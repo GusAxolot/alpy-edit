@@ -19,6 +19,19 @@ jobs:
       - run: sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 24/' android/app/build.gradle.kts || true
       - run: sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 24/' android/app/build.gradle || true
       - run: |
+          mkdir -p ~/.gradle/init.d
+          cat > ~/.gradle/init.d/fix.gradle <<'EOF3'
+          gradle.beforeProject { p ->
+              if (p.name != 'app') {
+                  p.afterEvaluate {
+                      if (p.extensions.findByName('android') != null) {
+                          p.android.compileSdkVersion 36
+                      }
+                  }
+              }
+          }
+          EOF3
+      - run: |
           pip install pillow
           python3 - <<'EOF2'
           from PIL import Image
