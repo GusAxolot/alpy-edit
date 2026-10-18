@@ -16,9 +16,11 @@ jobs:
           channel: stable
       - run: flutter create --project-name alpy_edit --org com.alpy --platforms android .
       - run: sed -i 's|android:label="alpy_edit"|android:label="Alpy Misali Vidio ❤️"|' android/app/src/main/AndroidManifest.xml
+      - run: sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 24/' android/app/build.gradle.kts || true
+      - run: sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 24/' android/app/build.gradle || true
       - run: |
           pip install pillow
-          python3 - <<'EOF'
+          python3 - <<'EOF2'
           from PIL import Image
           img = Image.open('icon.png').convert('RGBA')
           w, h = img.size
@@ -28,9 +30,9 @@ jobs:
           sizes = {'mdpi': 48, 'hdpi': 72, 'xhdpi': 96, 'xxhdpi': 144, 'xxxhdpi': 192}
           for d, s in sizes.items():
               img.resize((s, s), Image.LANCZOS).save(f'android/app/src/main/res/mipmap-{d}/ic_launcher.png', 'PNG')
-          EOF
+          EOF2
       - run: flutter pub get
-      - run: flutter build apk --release
+      - run: flutter build apk --release --no-shrink --target-platform android-arm64
       - uses: actions/upload-artifact@v4
         with:
           name: alpy-edit-apk
