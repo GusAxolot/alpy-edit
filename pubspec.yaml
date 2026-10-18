@@ -13,6 +13,9 @@ dependencies:
   shared_preferences: ^2.3.2
   path_provider: ^2.1.4
   gal: ^2.3.0
+  video_player: ^2.9.2
+  file_picker: ^8.1.2
+  ffmpeg_kit_flutter_new: ^4.3.2
 
 flutter:
   uses-material-design: true
