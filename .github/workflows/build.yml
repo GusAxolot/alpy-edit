@@ -16,6 +16,10 @@ jobs:
           channel: stable
       - run: flutter create --project-name alpy_edit --org com.alpy --platforms android .
       - run: sed -i 's|android:label="alpy_edit"|android:label="Alpy Misali Vidio ❤️"|' android/app/src/main/AndroidManifest.xml
+      - run: |
+          M=android/app/src/main/AndroidManifest.xml
+          sed -i '0,/<application/s|<application|<uses-permission android:name="android.permission.FOREGROUND_SERVICE" />\n    <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n    <uses-permission android:name="android.permission.WAKE_LOCK" />\n    <application|' $M
+          sed -i 's|</application>|    <service android:name="com.pravera.flutter_foreground_task.service.ForegroundService" android:foregroundServiceType="dataSync" android:exported="false" />\n    </application>|' $M
       - run: sed -i 's/minSdk = flutter.minSdkVersion/minSdk = 24/' android/app/build.gradle.kts || true
       - run: sed -i 's/minSdkVersion flutter.minSdkVersion/minSdkVersion 24/' android/app/build.gradle || true
       - run: |
